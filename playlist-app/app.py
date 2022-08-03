@@ -10,9 +10,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
 connect_db(app)
-db.create_all()
 
-app.config['SECRET_KEY'] = "I'LL NEVER TELL!!"
+app.config['SECRET_KEY'] = "vansusopen"
 
 # Having the Debug Toolbar show redirects explicitly is often useful;
 # however, if you want to turn it off, you can uncomment this line:
@@ -107,10 +106,10 @@ def add_song_to_playlist(playlist_id):
 
     if form.validate_on_submit():
 
-          # ADD THE NECESSARY CODE HERE FOR THIS ROUTE TO WORK
+        # ADD THE NECESSARY CODE HERE FOR THIS ROUTE TO WORK
 
-          return redirect(f"/playlists/{playlist_id}")
+        return redirect(f"/playlists/{playlist_id}")
 
     return render_template("add_song_to_playlist.html",
-                             playlist=playlist,
-                             form=form)
+                           playlist=playlist,
+                           form=form)
