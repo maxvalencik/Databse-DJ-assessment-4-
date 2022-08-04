@@ -11,13 +11,18 @@
 
 
 <div class="text-danger">
-  SHOW ALL OF THE SONGS IN THIS PLAYLIST HERE
-</div>
+  <h2>Songs included:</h2>
+  <ul>
+    {% if songs %}
+    {% for song in songs %}
+    <li href="/songs/{{song.id}}">{{ song.title }}</li>
+    {% endfor %}
+    {% endif %}
 
-<p>
-  <a class="btn btn-primary" href="/playlists/{{ playlist.id }}/add-song">
-    Add Song To Playlist
-  </a>
-</p>
+    <p>
+      <a class="btn btn-primary" href="/playlists/{{ playlist.id }}/add-song">
+        Add Song To Playlist
+      </a>
+    </p>
 
-{% endblock %}
+    {% endblock %}

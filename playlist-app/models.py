@@ -16,6 +16,9 @@ def connect_db(app):
     db.init_app(app)
 
 
+#################################
+#Tables and relationships
+
 class Playlist(db.Model):
     """Playlist."""
 
@@ -28,8 +31,17 @@ class Playlist(db.Model):
     # playlist to palylistsong and back
     assignment = db.relationship('PlaylistSong', backref='playlists')
     # playlist to song and back using playlistsong
-    songs = db.relationship(
-        'Song', secondary='PlaylistSong', backref='playlists')
+    # songs = db.relationship(
+    #     'Song', secondary='playlists_songs', backref='playlists')
+
+    def to_dict(self):
+        """Serialize playlist to a dictionary of info."""
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+        }
 
 
 class Song(db.Model):
@@ -44,8 +56,17 @@ class Song(db.Model):
     # song to playlistsong and back
     assignment = db.relationship('PlaylistSong', backref='songs')
     # song to playlist and back using playlistsong
-    playlists = db.relationship(
-        'Playlist', secondary='PlaylistSong', backref='songs')
+    # playlists = db.relationship(
+    #     'Playlist', secondary='playlists_songs', backref='songs')
+
+    def to_dict(self):
+        """Serialize song to a dictionary of info."""
+
+        return {
+            "id": self.id,
+            "title": self.title,
+            "artist": self.artist,
+        }
 
 
 class PlaylistSong(db.Model):

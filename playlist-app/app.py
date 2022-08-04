@@ -1,4 +1,5 @@
-from flask import Flask, redirect, render_template
+from turtle import title
+from flask import Flask, redirect, render_template, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
 from models import db, connect_db, Playlist, Song, PlaylistSong
@@ -44,7 +45,13 @@ def show_all_playlists():
 def show_playlist(playlist_id):
     """Show detail on specific playlist."""
 
-    # ADD THE NECESSARY CODE HERE FOR THIS ROUTE TO WORK
+    # Get the playlist object in the database
+    playlist = Playlist.query.get_or_404(playlist_id)
+    # Get songs in playlist
+    songs = Song.query.join(PlaylistSong).filter(Song.id == PlaylistSong.song_id).join(
+        Playlist).filter(PlaylistSong.playlist_id == Playlist.id).all()
+
+    return render_template('playlist.html', playlist=playlist, songs=songs)
 
 
 @app.route("/playlists/add", methods=["GET", "POST"])
@@ -54,8 +61,26 @@ def add_playlist():
     - if form not filled out or invalid: show form
     - if valid: add playlist to SQLA and redirect to list-of-playlists
     """
+    form = PlaylistForm()
 
-    # ADD THE NECESSARY CODE HERE FOR THIS ROUTE TO WORK
+    if form.validate_on_submit():
+
+        # Get form data and create playlist object
+        name = form.name.data
+        description = form.description.data or None
+
+        playlist = Playlist(
+            name=name,
+            description=description,
+        )
+
+        # Send the new playlist to the database
+        db.session.add(playlist)
+        db.session.commit()
+
+        return redirect("/playlists")
+
+    return render_template('new_playlist.html', form=form)
 
 
 ##############################################################################
@@ -74,7 +99,14 @@ def show_all_songs():
 def show_song(song_id):
     """return a specific song"""
 
-    # ADD THE NECESSARY CODE HERE FOR THIS ROUTE TO WORK
+    # Get the song object in the database
+    song = Song.query.get_or_404(song_id)
+
+    # Get Playlist having song
+    playlists = Playlist.query.join(PlaylistSong).filter(Playlist.id == PlaylistSong.playlist_id).join(
+        Song).filter(PlaylistSong.song_id == Song.id).all()
+
+    return render_template('song.html', song=song, playlists=playlists)
 
 
 @app.route("/songs/add", methods=["GET", "POST"])
@@ -85,7 +117,26 @@ def add_song():
     - if valid: add playlist to SQLA and redirect to list-of-songs
     """
 
-    # ADD THE NECESSARY CODE HERE FOR THIS ROUTE TO WORK
+    form = SongForm()
+
+    if form.validate_on_submit():
+
+        # Get form data and create song object
+        title = form.title.data
+        artist = form.artist.data or None
+
+        song = Song(
+            title=title,
+            artist=artist
+        )
+
+        # Send the new song to the database
+        db.session.add(song)
+        db.session.commit()
+
+        return redirect("/songs")
+
+    return render_template('new_song.html', form=form)
 
 
 @app.route("/playlists/<int:playlist_id>/add-song", methods=["GET", "POST"])
