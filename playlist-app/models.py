@@ -29,7 +29,7 @@ class Playlist(db.Model):
     description = db.Column(db.Text)
 
     # playlist to palylistsong and back
-    assignment = db.relationship('PlaylistSong', backref='playlists')
+    songs = db.relationship('PlaylistSong', backref='playlists')
     # playlist to song and back using playlistsong
     # songs = db.relationship(
     #     'Song', secondary='playlists_songs', backref='playlists')
@@ -54,7 +54,7 @@ class Song(db.Model):
     artist = db.Column(db.Text, nullable=False)
 
     # song to playlistsong and back
-    assignment = db.relationship('PlaylistSong', backref='songs')
+    playlists = db.relationship('PlaylistSong', backref='songs')
     # song to playlist and back using playlistsong
     # playlists = db.relationship(
     #     'Playlist', secondary='playlists_songs', backref='songs')
@@ -76,6 +76,6 @@ class PlaylistSong(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     playlist_id = db.Column(db.Integer,  db.ForeignKey(
-        'playlists.id'), nullable=False, unique=True)
+        'playlists.id'), nullable=False)
     song_id = db.Column(db.Integer, db.ForeignKey(
-        'songs.id'), nullable=False, unique=True, )
+        'songs.id'), nullable=False)
